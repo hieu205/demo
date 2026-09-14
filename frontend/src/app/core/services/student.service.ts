@@ -25,7 +25,7 @@ export class StudentService {
 
   // --- API Học sinh ---
 
-  getStudents(page: number = 1, pageSize: number = 10, search: string = ''): Observable<PaginatedResult<Student>> {
+  getStudents(page: number = 1, pageSize: number = 10, search: string = '', sortBy: string = '', sortDir: 'asc'|'desc' = 'asc'): Observable<PaginatedResult<Student>> {
     let filtered = this.students;
     if (search) {
       const s = search.toLowerCase();
@@ -33,6 +33,19 @@ export class StudentService {
         x.fullName.toLowerCase().includes(s) ||
         x.studentCode.toLowerCase().includes(s)
       );
+    }
+
+    if (sortBy) {
+      filtered = [...filtered].sort((a: any, b: any) => {
+        let valA = a[sortBy];
+        let valB = b[sortBy];
+        if (typeof valA === 'string') valA = valA.toLowerCase();
+        if (typeof valB === 'string') valB = valB.toLowerCase();
+
+        if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
     }
 
     const startIndex = (page - 1) * pageSize;
@@ -43,7 +56,7 @@ export class StudentService {
       totalCount: filtered.length,
       page,
       pageSize
-    }).pipe(delay(400));
+    });
   }
 
   getStudentById(id: number): Observable<Student> {

@@ -15,7 +15,7 @@ export class ParentService {
     { id: 13, fullName: 'Phạm Minh Đ', phoneNumber: '0988112233', email: 'd.pham@example.com', occupation: 'Kinh doanh tự do' }
   ];
 
-  getParents(page: number = 1, pageSize: number = 10, search: string = ''): Observable<PaginatedResult<Parent>> {
+  getParents(page: number = 1, pageSize: number = 10, search: string = '', sortBy: string = '', sortDir: 'asc'|'desc' = 'asc'): Observable<PaginatedResult<Parent>> {
     let filtered = this.parents;
     if (search) {
       const s = search.toLowerCase();
@@ -24,6 +24,20 @@ export class ParentService {
         x.phoneNumber.includes(s)
       );
     }
+
+    if (sortBy) {
+      filtered = [...filtered].sort((a: any, b: any) => {
+        let valA = a[sortBy];
+        let valB = b[sortBy];
+        if (typeof valA === 'string') valA = valA.toLowerCase();
+        if (typeof valB === 'string') valB = valB.toLowerCase();
+
+        if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
     const startIndex = (page - 1) * pageSize;
     const items = filtered.slice(startIndex, startIndex + pageSize);
 
@@ -32,7 +46,7 @@ export class ParentService {
       totalCount: filtered.length,
       page,
       pageSize
-    }).pipe(delay(300));
+    });
   }
 
   // Dùng để đổ vào dropdown khi gán phụ huynh cho học sinh

@@ -54,7 +54,7 @@ import { ParentService } from '../../core/services/parent.service';
       <!-- Cột Phải: Danh sách Phụ huynh (Quan hệ n-n) -->
       <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
-          <h3 class="text-lg font-bold text-gray-800">Thông tin Phụ huynh (Liên kết n-n)</h3>
+          <h3 class="text-lg font-bold text-gray-800">Thông tin Phụ huynh </h3>
         </div>
 
         <!-- Bảng danh sách phụ huynh hiện tại -->
