@@ -12,7 +12,7 @@ export interface Student {
 }
 
 export interface LinkedParent extends Parent {
-  relationshipType: 'Father' | 'Mother' | 'Guardian';
+  relationshipType: string;
 }
 
 export interface PaginatedResult<T> {

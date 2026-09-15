@@ -75,12 +75,14 @@ import { Parent } from '../../core/models/parent.model';
                   <svg *ngIf="sortColumn() === 'occupation' && sortDirection() === 'desc'" class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                 </div>
               </th>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Vai trò</th>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Địa chỉ</th>
               <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Thao tác</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-100">
             <tr *ngIf="isLoading()">
-              <td colspan="5" class="px-6 py-12 text-center">
+              <td colspan="7" class="px-6 py-12 text-center">
                 <svg class="animate-spin h-8 w-8 mx-auto text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -89,7 +91,7 @@ import { Parent } from '../../core/models/parent.model';
               </td>
             </tr>
             <tr *ngIf="!isLoading() && parents().length === 0">
-              <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+              <td colspan="7" class="px-6 py-12 text-center text-gray-500">
                 <div class="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
                   <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -110,6 +112,13 @@ import { Parent } from '../../core/models/parent.model';
                   {{ p.occupation }}
                 </span>
                 <span *ngIf="!p.occupation">—</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-medium">
+                <span *ngIf="p.relationship" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100">{{ p.relationship }}</span>
+                <span *ngIf="!p.relationship" class="text-gray-400">—</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-[150px] truncate" [title]="p.address || ''">
+                {{ p.address || '—' }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium action-dropdown-container relative">
                 <button (click)="toggleDropdown(p.id, $event)" class="text-gray-400 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-100">

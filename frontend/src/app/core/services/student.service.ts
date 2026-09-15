@@ -21,8 +21,6 @@ export class StudentService {
     { id: 6, studentCode: 'SV006', fullName: 'Hoàng Thị F', dateOfBirth: '2011-07-22', gender: 'Female', className: '9A4', address: 'Nha Trang', parents: [] },
   ];
 
-  // Xóa mockParents vì đã chuyển sang ParentService
-
   // --- API Học sinh ---
 
   getStudents(page: number = 1, pageSize: number = 10, search: string = '', sortBy: string = '', sortDir: 'asc'|'desc' = 'asc'): Observable<PaginatedResult<Student>> {
@@ -103,7 +101,7 @@ export class StudentService {
 
   // --- API Gán Phụ Huynh ---
 
-  addParentLink(studentId: number, parentId: number, relationshipType: 'Father' | 'Mother' | 'Guardian'): Observable<any> {
+  addParentLink(studentId: number, parentId: number, relationshipType: string): Observable<any> {
     const student = this.students.find(s => s.id === studentId);
 
     // Sử dụng parentService đã được inject ở đầu class

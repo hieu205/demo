@@ -10,7 +10,7 @@ export class AuthService {
 
   // Giả lập API Login trả về JWT dựa trên API_DOCS
   login(credentials: { username: string; password: string }): Observable<any> {
-    if (credentials.username === 'admin01' && credentials.password === '123456') {
+    if (credentials.username === 'admin01' && credentials.password === 'Admin@123') {
       const mockResponse = {
         accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock_token_for_admin01',
         expiresIn: 3600,

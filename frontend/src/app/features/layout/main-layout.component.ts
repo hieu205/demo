@@ -1,4 +1,4 @@
-import { Component, inject, HostListener, signal } from '@angular/core';
+import { Component, inject, HostListener, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
@@ -39,9 +39,10 @@ import { AuthService } from '../../core/auth/auth.service';
           <!-- Right side user profile -->
           <div class="flex items-center px-4 sm:px-6 lg:px-8 relative user-dropdown-container">
             <button (click)="toggleUserDropdown($event)" class="flex items-center gap-2 focus:outline-none rounded-full hover:ring-2 hover:ring-blue-300 transition-all">
-              <div class="w-9 h-9 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold text-sm shadow-sm border border-blue-100">
+              <div *ngIf="!avatarUrl()" class="w-9 h-9 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold text-sm shadow-sm border border-blue-100">
                 {{ currentUser?.fullName?.charAt(0) || 'A' }}
               </div>
+              <img *ngIf="avatarUrl()" [src]="avatarUrl()" class="w-9 h-9 rounded-full object-cover shadow-sm border border-blue-100" alt="Avatar">
               <span class="hidden sm:block text-sm font-medium mr-1">{{ currentUser?.fullName || 'Admin' }}</span>
               <svg class="w-4 h-4 text-blue-200 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
@@ -134,12 +135,26 @@ import { AuthService } from '../../core/auth/auth.service';
     </div>
   `
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   private authService = inject(AuthService);
   currentUser = this.authService.getCurrentUser();
+  avatarUrl = signal<string | null>(null);
 
   isSidebarCollapsed = false;
   isUserDropdownOpen = signal(false);
+
+  ngOnInit() {
+    this.loadUserData();
+    // Lắng nghe sự kiện để cập nhật Header ngay lập tức khi đổi profile
+    window.addEventListener('storage', () => {
+      this.loadUserData();
+    });
+  }
+
+  loadUserData() {
+    this.currentUser = this.authService.getCurrentUser();
+    this.avatarUrl.set(localStorage.getItem('user_avatar'));
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {

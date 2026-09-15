@@ -4,11 +4,13 @@ export interface Parent {
   phoneNumber: string;
   email: string;
   occupation: string;
+  address?: string;
+  relationship?: string;
 }
 
 export interface StudentParent {
   studentId: number;
   parentId: number;
-  relationshipType: 'Father' | 'Mother' | 'Guardian';
+  relationshipType: string;
 }
 

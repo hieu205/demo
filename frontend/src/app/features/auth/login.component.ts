@@ -26,11 +26,11 @@ import { AuthService } from '../../core/auth/auth.service';
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <!-- Username -->
           <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Tài khoản</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Tài khoản <span class="text-red-500">*</span></label>
             <input formControlName="username"
               class="shadow-sm appearance-none border rounded-lg w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               [ngClass]="{'border-red-500': f['username'].invalid && (f['username'].dirty || f['username'].touched || submitted())}"
-              id="username" type="text" placeholder="Tên đăng nhập (VD: admin01)">
+              id="username" type="text" placeholder="Tên đăng nhập">
 
             <div *ngIf="f['username'].invalid && (f['username'].dirty || f['username'].touched || submitted())" class="text-red-500 text-xs mt-1 font-medium">
               <span *ngIf="f['username'].errors?.['required']">Vui lòng nhập tài khoản.</span>
@@ -40,15 +40,29 @@ import { AuthService } from '../../core/auth/auth.service';
 
           <!-- Password -->
           <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mật khẩu</label>
-            <input formControlName="password"
-              class="shadow-sm appearance-none border rounded-lg w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              [ngClass]="{'border-red-500': f['password'].invalid && (f['password'].dirty || f['password'].touched || submitted())}"
-              id="password" type="password" placeholder="******">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mật khẩu <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input formControlName="password"
+                class="shadow-sm appearance-none border rounded-lg w-full py-2.5 pl-3 pr-10 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                [ngClass]="{'border-red-500': f['password'].invalid && (f['password'].dirty || f['password'].touched || submitted())}"
+                id="password" [type]="showPassword ? 'text' : 'password'" placeholder="******">
+              <button type="button" (click)="showPassword = !showPassword" tabindex="-1"
+                      class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
+                <!-- Eye Icon -->
+                <svg *ngIf="!showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <!-- Eye Slash Icon -->
+                <svg *ngIf="showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              </button>
+            </div>
 
             <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched || submitted())" class="text-red-500 text-xs mt-1 font-medium">
               <span *ngIf="f['password'].errors?.['required']">Vui lòng nhập mật khẩu.</span>
-              <span *ngIf="f['password'].errors?.['minlength']">Mật khẩu phải dài tối thiểu 6 ký tự.</span>
+              <span *ngIf="f['password'].errors?.['pattern']">Mật khẩu phải từ 8 ký tự, gồm chữ hoa, thường, số và ký tự đặc biệt (@$!%*?&).</span>
             </div>
           </div>
 
@@ -88,7 +102,7 @@ import { AuthService } from '../../core/auth/auth.service';
                 <div class="w-full border-t border-gray-200"></div>
               </div>
               <div class="relative flex justify-center text-sm">
-                <span class="px-2 bg-white text-gray-500 font-medium">Hoặc đăng nhập với</span>
+                <span class="px-2 text-gray-500 font-medium">Hoặc đăng nhập với</span>
               </div>
             </div>
 
@@ -124,7 +138,7 @@ import { AuthService } from '../../core/auth/auth.service';
             <div *ngIf="forgotStep === 1">
               <p class="text-sm text-gray-600 mb-4">Vui lòng nhập địa chỉ email đã đăng ký của bạn. Hệ thống sẽ gửi mã OTP gồm 6 chữ số để xác thực.</p>
               <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Địa chỉ Email</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Địa chỉ Email <span class="text-red-500">*</span></label>
                 <input type="email" [(ngModel)]="resetEmail" class="shadow-sm appearance-none border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="example@gmail.com">
               </div>
               <button (click)="sendOtp()" [disabled]="!resetEmail || isSendingOtp" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all disabled:opacity-70 flex justify-center items-center shadow-md">
@@ -141,18 +155,38 @@ import { AuthService } from '../../core/auth/auth.service';
               </div>
 
               <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Mã OTP (6 số)</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Mã OTP (6 số) <span class="text-red-500">*</span></label>
                 <input type="text" [(ngModel)]="resetOtp" maxlength="6" class="shadow-sm appearance-none border rounded-lg w-full py-2.5 px-3 text-gray-700 tracking-widest text-center text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="------">
               </div>
 
               <div class="mb-5">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Mật khẩu mới</label>
-                <input type="password" [(ngModel)]="newPassword" class="shadow-sm appearance-none border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="******">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Mật khẩu mới <span class="text-red-500">*</span></label>
+                <div class="relative">
+                  <input [(ngModel)]="newPassword" [type]="showNewPassword ? 'text' : 'password'"
+                         class="shadow-sm appearance-none border rounded-lg w-full py-2.5 pl-3 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="******">
+                  <button type="button" (click)="showNewPassword = !showNewPassword" tabindex="-1"
+                          class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
+                    <!-- Eye Icon -->
+                    <svg *ngIf="!showNewPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <!-- Eye Slash Icon -->
+                    <svg *ngIf="showNewPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                  </button>
+                </div>
               </div>
 
               <div class="flex gap-3">
                 <button (click)="forgotStep = 1" class="w-1/3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-lg transition-colors border border-gray-200">Quay lại</button>
-                <button (click)="resetPassword()" [disabled]="!resetOtp || !newPassword || resetOtp.length !== 6" class="w-2/3 bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300 transition-all disabled:opacity-70 shadow-md">Lưu mật khẩu</button>
+                <button (click)="resetPassword()"
+                        [disabled]="!resetOtp || resetOtp.length !== 6 || !newPassword || !checkPasswordRegex(newPassword)"
+                        class="w-2/3 bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300 transition-all disabled:opacity-70 shadow-md">Lưu mật khẩu</button>
+              </div>
+              <div *ngIf="newPassword && !checkPasswordRegex(newPassword)" class="text-red-500 text-xs mt-2 font-medium">
+                Mật khẩu phải từ 8 ký tự, gồm chữ hoa, thường, số và ký tự đặc biệt (@$!%*?&).
               </div>
             </div>
 
@@ -188,13 +222,19 @@ export class LoginComponent {
 
   loginForm: FormGroup = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(5)]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [
+      Validators.required,
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+    ]],
     rememberMe: [false]
   });
 
   submitted = signal(false);
   isLoading = signal(false);
   errorMessage = signal('');
+
+  showPassword = false;
+  showNewPassword = false;
 
   // Trạng thái modal Quên mật khẩu
   showForgotPassword = false;
@@ -251,6 +291,7 @@ export class LoginComponent {
       this.resetOtp = '';
       this.newPassword = '';
       this.isSendingOtp = false;
+      this.showNewPassword = false;
     }, 300);
   }
 
@@ -267,5 +308,10 @@ export class LoginComponent {
     setTimeout(() => {
       this.forgotStep = 3;
     }, 800);
+  }
+
+  checkPasswordRegex(password: string): boolean {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
   }
 }

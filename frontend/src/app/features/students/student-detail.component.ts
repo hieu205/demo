@@ -72,7 +72,7 @@ import { ParentService } from '../../core/services/parent.service';
               <tr *ngFor="let parent of student()?.parents">
                 <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ parent.fullName }}</td>
                 <td class="px-4 py-3 text-sm text-blue-600 font-semibold">
-                  {{ parent.relationshipType === 'Father' ? 'Bố' : (parent.relationshipType === 'Mother' ? 'Mẹ' : 'Người giám hộ') }}
+                  {{ parent.relationshipType || '—' }}
                 </td>
                 <td class="px-4 py-3 text-sm text-gray-500">{{ parent.phoneNumber }}</td>
                 <td class="px-4 py-3 text-right">
@@ -105,6 +105,7 @@ import { ParentService } from '../../core/services/parent.service';
               <div *ngIf="selectedParent()" class="absolute inset-y-1 left-1 right-10 flex items-center bg-blue-100 rounded px-3 text-blue-800">
                 <span class="font-medium truncate">{{ selectedParent()?.fullName }}</span>
                 <span class="ml-2 text-sm text-blue-600 truncate">- {{ selectedParent()?.phoneNumber }}</span>
+                <span class="ml-2 text-xs bg-white text-blue-600 px-2 py-0.5 rounded-full" *ngIf="selectedParent()?.relationship">{{ selectedParent()?.relationship }}</span>
               </div>
               <button *ngIf="selectedParent()" (click)="clearSelection(); $event.stopPropagation()" class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-red-500 bg-white rounded-r-md">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -119,18 +120,15 @@ import { ParentService } from '../../core/services/parent.service';
                   </li>
                   <li *ngFor="let p of filteredParents()" (mousedown)="selectParent(p); $event.preventDefault()"
                       class="px-4 py-3 hover:bg-blue-50 cursor-pointer flex flex-col border-b border-gray-50 last:border-0 transition-colors">
-                    <span class="font-medium text-gray-900">{{ p.fullName }}</span>
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-900">{{ p.fullName }}</span>
+                      <span *ngIf="p.relationship" class="text-xs bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded">{{ p.relationship }}</span>
+                    </div>
                     <span class="text-xs text-gray-500 mt-1">SĐT: {{ p.phoneNumber }} | Nghề: {{ p.occupation || '—' }}</span>
                   </li>
                 </ul>
               </div>
             </div>
-
-            <select [(ngModel)]="selectedRelation" class="w-full sm:w-40 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white transition-all">
-              <option value="Father">Bố</option>
-              <option value="Mother">Mẹ</option>
-              <option value="Guardian">Giám hộ</option>
-            </select>
 
             <button (click)="addParent()" [disabled]="!selectedParent() || isLinking()"
               class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md transition-colors disabled:opacity-50 whitespace-nowrap font-medium flex items-center justify-center">
@@ -168,8 +166,6 @@ export class StudentDetailComponent implements OnInit {
   showDropdown = false;
   searchTerm = '';
   selectedParent = signal<Parent | null>(null);
-
-  selectedRelation: 'Father' | 'Mother' | 'Guardian' = 'Father';
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -222,11 +218,13 @@ export class StudentDetailComponent implements OnInit {
   }
 
   addParent() {
-    const parentId = this.selectedParent()?.id;
-    if (!parentId || !this.student()) return;
+    const parent = this.selectedParent();
+    if (!parent || !this.student()) return;
 
     this.isLinking.set(true);
-    this.studentService.addParentLink(this.student()!.id, parentId, this.selectedRelation)
+    const relationship = parent.relationship || 'Chưa xác định';
+
+    this.studentService.addParentLink(this.student()!.id, parent.id, relationship)
       .subscribe(() => {
         this.isLinking.set(false);
         this.clearSelection();

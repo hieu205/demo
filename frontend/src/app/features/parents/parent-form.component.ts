@@ -49,10 +49,32 @@ import { ParentService } from '../../core/services/parent.service';
             </div>
 
             <!-- Nghề nghiệp -->
-            <div class="md:col-span-2">
+            <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Nghề nghiệp</label>
               <input type="text" formControlName="occupation"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Vai trò / Quan hệ -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Vai trò / Quan hệ</label>
+              <select formControlName="relationship"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white">
+                <option value="">Chọn mối quan hệ...</option>
+                <option value="Bố">Bố</option>
+                <option value="Mẹ">Mẹ</option>
+                <option value="Ông">Ông</option>
+                <option value="Bà">Bà</option>
+                <option value="Người giám hộ">Người giám hộ</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+
+            <!-- Địa chỉ -->
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Địa chỉ</label>
+              <textarea formControlName="address" rows="2"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
             </div>
           </div>
 
@@ -88,7 +110,9 @@ export class ParentFormComponent implements OnInit {
     fullName: ['', Validators.required],
     phoneNumber: ['', Validators.required],
     email: [''],
-    occupation: ['']
+    occupation: [''],
+    address: [''],
+    relationship: ['']
   });
 
   get f() { return this.parentForm.controls; }

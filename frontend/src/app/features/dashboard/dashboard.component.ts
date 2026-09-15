@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, signal, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-dashboard',
@@ -157,6 +158,14 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
         </div>
       </div>
 
+      <!-- Map Row -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+        <h3 class="text-lg font-bold text-gray-800 mb-6">Bản đồ Phân bổ Địa chỉ Học sinh (Street View)</h3>
+        <div class="flex-1 relative min-h-[500px] w-full rounded-xl overflow-hidden border border-gray-200">
+          <div id="studentMap" class="absolute inset-0 z-0"></div>
+        </div>
+      </div>
+
       <style>
         .animate-fade-in-up {
           animation: fadeInUp 0.2s ease-out;
@@ -169,10 +178,11 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
     </div>
   `
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   // Real-time clock
   currentTime = signal(new Date());
   private timer: any;
+  private map: L.Map | undefined;
 
   // Dropdown states for cards
   showStudentDropdown = signal(false);
@@ -245,8 +255,57 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
+  ngAfterViewInit() {
+    this.initMap();
+  }
+
   ngOnDestroy() {
     if (this.timer) clearInterval(this.timer);
+    if (this.map) {
+      this.map.remove();
+    }
+  }
+
+  private initMap(): void {
+    // Sửa lỗi icon mặc định của Leaflet trong Angular
+    const DefaultIcon = L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      tooltipAnchor: [16, -28],
+      shadowSize: [41, 41]
+    });
+    L.Marker.prototype.options.icon = DefaultIcon;
+
+    // Zoom level 15 để nhìn rõ đường xá (Mô phỏng khu vực ngã tư sở, Hà Nội)
+    this.map = L.map('studentMap').setView([21.0076, 105.8196], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+      maxZoom: 19
+    }).addTo(this.map);
+
+    // Mock data mô phỏng tọa độ chi tiết của học sinh (đến tận ngõ/ngách)
+    const students = [
+      { name: 'Trần Thị B (SV001)', address: 'Số 10, Ngõ 29 Khương Hạ', coords: [21.0011, 105.8188] },
+      { name: 'Nguyễn Văn A (SV002)', address: 'Số 45, Đường Láng', coords: [21.0065, 105.8155] },
+      { name: 'Lê Hoàng C (SV003)', address: 'Số 2, Ngõ 73 Trường Chinh', coords: [21.0022, 105.8271] },
+      { name: 'Phạm Minh D (SV004)', address: 'Chung cư Royal City, Nguyễn Trãi', coords: [21.0038, 105.8152] }
+    ];
+
+    students.forEach(s => {
+      L.marker(s.coords as L.LatLngExpression)
+        .addTo(this.map!)
+        .bindPopup(`
+          <div class="text-sm">
+            <strong class="text-blue-600 block mb-1">${s.name}</strong>
+            <span>📍 ${s.address}</span>
+          </div>
+        `);
+    });
   }
 
   @HostListener('document:click', ['$event'])
