@@ -13,8 +13,22 @@ export class StudentService {
 
   // --- MOCK DATA ---
   private students: Student[] = [
-    { id: 1, studentCode: 'HS001', fullName: 'Trần Thị B', dateOfBirth: '2008-05-12', gender: 'Female', className: '12A1', address: 'Hà Nội', parents: [] },
-    { id: 2, studentCode: 'HS002', fullName: 'Nguyễn Văn A', dateOfBirth: '2008-10-20', gender: 'Male', className: '12A1', address: 'TP.HCM', parents: [] },
+    {
+      id: 1, studentCode: 'HS001', fullName: 'Trần Thị B', dateOfBirth: '2008-05-12', gender: 'Female', className: '12A1', address: 'Hà Nội',
+      parents: [
+        { id: 101, fullName: 'Trần Văn X', phoneNumber: '0901111111', email: 'x@test.com', occupation: 'Kỹ sư', address: 'Hà Nội', relationshipType: 'Bố' },
+        { id: 102, fullName: 'Lê Thị Y', phoneNumber: '0902222222', email: 'y@test.com', occupation: 'Giáo viên', address: 'Hà Nội', relationshipType: 'Mẹ' }
+      ]
+    },
+    {
+      id: 2, studentCode: 'HS002', fullName: 'Nguyễn Văn A', dateOfBirth: '2008-10-20', gender: 'Male', className: '12A1', address: 'TP.HCM',
+      parents: [
+        { id: 103, fullName: 'Nguyễn Văn Z', phoneNumber: '0903333333', email: 'z@test.com', occupation: 'Bác sĩ', address: 'TP.HCM', relationshipType: 'Bố' },
+        { id: 104, fullName: 'Phạm Thị M', phoneNumber: '0904444444', email: 'm@test.com', occupation: 'Kế toán', address: 'TP.HCM', relationshipType: 'Mẹ' },
+        { id: 105, fullName: 'Nguyễn Ông Nội', phoneNumber: '0905555555', email: 'noi@test.com', occupation: 'Hưu trí', address: 'TP.HCM', relationshipType: 'Ông nội' },
+        { id: 106, fullName: 'Nguyễn Bà Nội', phoneNumber: '0906666666', email: 'banoi@test.com', occupation: 'Hưu trí', address: 'TP.HCM', relationshipType: 'Bà nội' }
+      ]
+    },
     { id: 3, studentCode: 'HS003', fullName: 'Lê Hoàng C', dateOfBirth: '2009-01-15', gender: 'Male', className: '11B2', address: 'Đà Nẵng', parents: [] },
     { id: 4, studentCode: 'HS004', fullName: 'Phạm Minh D', dateOfBirth: '2009-08-30', gender: 'Female', className: '11B2', address: 'Hải Phòng', parents: [] },
     { id: 5, studentCode: 'HS005', fullName: 'Vũ Đức E', dateOfBirth: '2010-03-05', gender: 'Male', className: '10C3', address: 'Cần Thơ', parents: [] },

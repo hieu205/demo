@@ -1,14 +1,15 @@
 import { Component, inject, OnInit, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
 import { ParentService } from '../../core/services/parent.service';
 import { Parent } from '../../core/models/parent.model';
+import { ParentFormComponent } from './parent-form.component';
 
 @Component({
   selector: 'app-parent-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, RouterModule, ParentFormComponent],
   template: `
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
       <!-- Header & Search -->
@@ -97,26 +98,28 @@ import { Parent } from '../../core/models/parent.model';
               </td>
             </tr>
             <tr *ngFor="let parent of parents()" class="hover:bg-blue-50 dark:bg-blue-900/20 dark:hover:bg-slate-700/60 transition-all duration-300 group">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-bold flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-green-100 to-green-200 text-green-700 flex items-center justify-center font-bold text-xs shadow-sm">{{ parent.fullName.charAt(0) }}</div>
-                {{ parent.fullName }}
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-bold align-middle">
+                <div class="flex items-center gap-3">
+                  <img [src]="'https://ui-avatars.com/api/?name=' + parent.fullName + '&background=random&color=fff&size=128'" alt="Avatar" class="w-8 h-8 rounded-full shadow-sm shrink-0 border border-gray-200 dark:border-slate-600">
+                  {{ parent.fullName }}
+                </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600 dark:text-slate-300">{{ parent.phoneNumber }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-slate-300">{{ parent.email || '—' }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-slate-300">{{ parent.occupation || '—' }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium action-dropdown-container relative">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600 dark:text-slate-300 align-middle">{{ parent.phoneNumber }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-slate-300 align-middle">{{ parent.email || '—' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-slate-300 align-middle">{{ parent.occupation || '—' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium action-dropdown-container relative align-middle">
                 <button (click)="toggleDropdown(parent.id, $event)" class="text-gray-400 hover:text-blue-600 dark:text-blue-400 p-2 rounded-full hover:bg-blue-50 dark:bg-blue-900/20 dark:hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-100">
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
                 </button>
 
                 <div *ngIf="activeDropdown() === parent.id" class="absolute right-8 top-10 w-36 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 z-50 animate-fade-in-up overflow-hidden">
                   <div class="py-1">
-                    <a [routerLink]="['/parents/edit', parent.id]" class="px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-orange-500 flex items-center transition-colors cursor-pointer">
+                    <button (click)="openEditModal(parent.id)" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-orange-500 flex items-center transition-colors cursor-pointer">
                       <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                       Sửa
-                    </a>
+                    </button>
                     <div class="border-t border-gray-100 dark:border-slate-700 my-1"></div>
-                    <button (click)="deleteParent(parent.id)" class="w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center transition-colors">
+                    <button (click)="confirmDelete(parent.id)" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center transition-colors">
                       <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                       Xóa
                     </button>
@@ -153,13 +156,13 @@ import { Parent } from '../../core/models/parent.model';
               </button>
               <div *ngIf="activeDropdown() === parent.id" class="absolute right-0 top-6 w-36 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 z-50 animate-fade-in-up text-left overflow-hidden">
                 <div class="py-1">
-                  <a [routerLink]="['/parents/edit', parent.id]" class="px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center">Sửa</a>
-                  <button (click)="deleteParent(parent.id)" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center">Xóa</button>
+                  <button (click)="openEditModal(parent.id)" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center">Sửa</button>
+                  <button (click)="confirmDelete(parent.id)" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center">Xóa</button>
                 </div>
               </div>
             </div>
 
-            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-green-100 to-green-200 text-green-700 dark:text-green-900 flex items-center justify-center font-bold text-3xl shadow-sm mb-4 border-4 border-white dark:border-slate-800 outline outline-gray-100 dark:outline-slate-700">{{ parent.fullName.charAt(0) }}</div>
+            <img [src]="'https://ui-avatars.com/api/?name=' + parent.fullName + '&background=random&color=fff&size=256'" alt="Avatar" class="w-24 h-24 rounded-full shadow-sm mb-4 border-4 border-white dark:border-slate-800 outline outline-gray-100 dark:outline-slate-700">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ parent.fullName }}</h3>
             <p class="text-green-600 dark:text-green-400 font-medium text-sm mb-4">Phụ huynh</p>
 
@@ -196,11 +199,53 @@ import { Parent } from '../../core/models/parent.model';
         .animate-fade-in-up {
           animation: fadeInUp 0.2s ease-out;
         }
+        .animate-fade-in-down {
+          animation: fadeInDown 0.3s ease-out;
+        }
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeInDown {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
       </style>
+    </div>
+
+    <!-- Edit Modal Overlay -->
+    <div *ngIf="isEditModalOpen()" class="fixed inset-0 z-[100] flex items-start justify-center pt-10 pb-10 bg-gray-900/50 dark:bg-black/60 backdrop-blur-sm overflow-y-auto">
+      <div class="w-full max-w-3xl px-4 animate-fade-in-down" (click)="$event.stopPropagation()">
+        <app-parent-form
+          [parentId]="editingParentId()"
+          [isModal]="true"
+          (saved)="onModalSaved()"
+          (cancelled)="closeEditModal()">
+        </app-parent-form>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div *ngIf="deleteParentId() !== null" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-gray-900/50 dark:bg-black/60 backdrop-blur-sm">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-fade-in-up border border-gray-100 dark:border-slate-700">
+        <div class="p-6">
+          <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4 mx-auto">
+            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">Xác nhận xóa phụ huynh</h3>
+          <p class="text-sm text-gray-500 dark:text-slate-400 text-center mb-6">Hành động này không thể hoàn tác. Toàn bộ dữ liệu của phụ huynh này sẽ bị xóa vĩnh viễn.</p>
+          <div class="flex items-center justify-center gap-3">
+            <button (click)="cancelDelete()" class="px-5 py-2.5 rounded-lg border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-200 font-medium hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors">
+              Hủy bỏ
+            </button>
+            <button (click)="executeDelete()" class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium shadow-sm transition-colors">
+              Xóa dữ liệu
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   `
 })
@@ -274,11 +319,57 @@ export class ParentListComponent implements OnInit {
       });
   }
 
+  // Modals state
+  isEditModalOpen = signal(false);
+  editingParentId = signal<number | null>(null);
+  deleteParentId = signal<number | null>(null);
+
   deleteParent(id: number) {
+    // We don't use this anymore, we use confirmDelete
+  }
+
+  // --- Modals Logic ---
+
+  openEditModal(id: number) {
     this.activeDropdown.set(null);
-    if (confirm('Bạn có chắc chắn muốn xóa phụ huynh này? Học sinh liên kết có thể bị ảnh hưởng.')) {
-      this.parentService.deleteParent(id).subscribe(() => {
-        this.loadParents();
+    this.editingParentId.set(id);
+    this.isEditModalOpen.set(true);
+  }
+
+  closeEditModal() {
+    this.isEditModalOpen.set(false);
+    setTimeout(() => {
+      this.editingParentId.set(null);
+    }, 300);
+  }
+
+  onModalSaved() {
+    this.closeEditModal();
+    this.loadParents();
+  }
+
+  confirmDelete(id: number) {
+    this.activeDropdown.set(null);
+    this.deleteParentId.set(id);
+  }
+
+  cancelDelete() {
+    this.deleteParentId.set(null);
+  }
+
+  executeDelete() {
+    const id = this.deleteParentId();
+    if (id !== null) {
+      this.parentService.deleteParent(id).subscribe({
+        next: () => {
+          this.deleteParentId.set(null);
+          this.loadParents();
+        },
+        error: (err) => {
+          console.error(err);
+          this.deleteParentId.set(null);
+          alert('Không thể xóa phụ huynh này.');
+        }
       });
     }
   }

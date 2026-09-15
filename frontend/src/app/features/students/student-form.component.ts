@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,13 +10,14 @@ import { Student } from '../../core/models/student.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden max-w-3xl mx-auto">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden w-full max-w-3xl mx-auto">
       <div class="p-6 border-b border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 flex justify-between items-center">
         <h2 class="text-xl font-bold text-gray-800 dark:text-slate-100">
           {{ isEditMode() ? 'Cập nhật Học sinh' : 'Thêm mới Học sinh' }}
         </h2>
         <button (click)="goBack()" class="text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:text-slate-300">
-          Trở lại
+          <svg *ngIf="isModal" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          <span *ngIf="!isModal">Trở lại</span>
         </button>
       </div>
 
@@ -106,51 +107,77 @@ import { Student } from '../../core/models/student.model';
   `
 })
 export class StudentFormComponent implements OnInit {
+  @Input() studentId: number | null = null;
+  @Input() isModal: boolean = false;
+  @Output() saved = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
+
   private fb = inject(FormBuilder);
   private studentService = inject(StudentService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private location = inject(Location);
 
+  studentForm!: FormGroup;
   isEditMode = signal(false);
   isLoading = signal(false);
   submitted = signal(false);
-  currentId: number | null = null;
-
-  studentForm: FormGroup = this.fb.group({
-    studentCode: ['', [Validators.required, Validators.pattern(/^HS[0-9]+$/)]],
-    fullName: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ỹ\s]*[a-zA-ZÀ-ỹ][a-zA-ZÀ-ỹ\s]*$/)]],
-    className: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s]*[a-zA-Z0-9][a-zA-Z0-9\s]*$/)]],
-    dateOfBirth: ['', Validators.required],
-    gender: ['Male', Validators.required],
-    address: ['']
-  });
-
-  get f() { return this.studentForm.controls; }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.isEditMode.set(true);
-        this.currentId = +id;
-        this.loadStudent(this.currentId);
+    this.initForm();
+    this.checkEditMode();
+  }
+
+  private initForm() {
+    this.studentForm = this.fb.group({
+      studentCode: ['', [Validators.required, Validators.pattern(/^HS\d+$/)]],
+      fullName: ['', [Validators.required, Validators.pattern(/^[^0-9!@#$%^&*()_+={}\[\]|\\:;"'<>,.?/]*$/)]],
+      dateOfBirth: ['', Validators.required],
+      gender: ['Male', Validators.required],
+      className: ['', [Validators.required, Validators.pattern(/^[0-9]+[a-zA-Z0-9]+$/)]],
+      address: ['']
+    });
+  }
+
+  private checkEditMode() {
+    let id = this.studentId;
+    if (!id) {
+      const routeId = this.route.snapshot.paramMap.get('id');
+      if (routeId) {
+        id = Number(routeId);
+      }
+    }
+
+    if (id) {
+      this.isEditMode.set(true);
+      this.loadStudentData(id);
+    }
+  }
+
+  private loadStudentData(id: number) {
+    this.isLoading.set(true);
+    this.studentService.getStudentById(id).subscribe({
+      next: (student) => {
+        if (student) {
+          const dateStr = new Date(student.dateOfBirth).toISOString().split('T')[0];
+          this.studentForm.patchValue({
+            ...student,
+            dateOfBirth: dateStr
+          });
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Lỗi khi tải dữ liệu học sinh', err);
+        this.isLoading.set(false);
+        alert('Không tìm thấy học sinh!');
+        this.goBack();
       }
     });
   }
 
-  loadStudent(id: number) {
-    this.isLoading.set(true);
-    this.studentService.getStudentById(id).subscribe({
-      next: (student) => {
-        this.studentForm.patchValue(student);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        alert('Không tìm thấy học sinh');
-        this.goBack();
-      }
-    });
+  get f() {
+    return this.studentForm.controls;
   }
 
   onSubmit() {
@@ -167,10 +194,17 @@ export class StudentFormComponent implements OnInit {
       address: rawData.address?.trim()
     };
 
-    if (this.isEditMode() && this.currentId) {
-      this.studentService.updateStudent(this.currentId, data).subscribe({
+    const id = this.studentId || Number(this.route.snapshot.paramMap.get('id'));
+
+    if (this.isEditMode() && id) {
+      this.studentService.updateStudent(id, data).subscribe({
         next: () => {
-          this.router.navigate(['/students']);
+          this.isLoading.set(false);
+          if (this.isModal) {
+            this.saved.emit();
+          } else {
+            this.router.navigate(['/students']);
+          }
         },
         error: (err) => {
           this.isLoading.set(false);
@@ -180,7 +214,12 @@ export class StudentFormComponent implements OnInit {
     } else {
       this.studentService.createStudent(data).subscribe({
         next: () => {
-          this.router.navigate(['/students']);
+          this.isLoading.set(false);
+          if (this.isModal) {
+            this.saved.emit();
+          } else {
+            this.router.navigate(['/students']);
+          }
         },
         error: (err) => {
           this.isLoading.set(false);
@@ -191,7 +230,10 @@ export class StudentFormComponent implements OnInit {
   }
 
   goBack() {
-    this.location.back();
+    if (this.isModal) {
+      this.cancelled.emit();
+    } else {
+      this.location.back();
+    }
   }
 }
-

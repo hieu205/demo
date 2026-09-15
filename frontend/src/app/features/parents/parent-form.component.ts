@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,13 +9,14 @@ import { ParentService } from '../../core/services/parent.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden max-w-3xl mx-auto">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden w-full max-w-3xl mx-auto">
       <div class="p-6 border-b border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 flex justify-between items-center">
         <h2 class="text-xl font-bold text-gray-800 dark:text-slate-100">
           {{ isEditMode() ? 'Cập nhật Phụ huynh' : 'Thêm mới Phụ huynh' }}
         </h2>
         <button (click)="goBack()" class="text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:text-slate-300">
-          Trở lại
+          <svg *ngIf="isModal" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          <span *ngIf="!isModal">Trở lại</span>
         </button>
       </div>
 
@@ -105,6 +106,11 @@ import { ParentService } from '../../core/services/parent.service';
   `
 })
 export class ParentFormComponent implements OnInit {
+  @Input() parentId: number | null = null;
+  @Input() isModal: boolean = false;
+  @Output() saved = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
+
   private fb = inject(FormBuilder);
   private parentService = inject(ParentService);
   private route = inject(ActivatedRoute);
@@ -114,7 +120,6 @@ export class ParentFormComponent implements OnInit {
   isEditMode = signal(false);
   isLoading = signal(false);
   submitted = signal(false);
-  currentId: number | null = null;
 
   parentForm: FormGroup = this.fb.group({
     fullName: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ỹ\s]*[a-zA-ZÀ-ỹ][a-zA-ZÀ-ỹ\s]*$/)]],
@@ -122,8 +127,8 @@ export class ParentFormComponent implements OnInit {
       Validators.required,
       Validators.pattern(/^(0[3|5|7|8|9])+([0-9]{8})$/)
     ]],
-    email: ['', Validators.email],
-    occupation: ['', Validators.pattern(/^[a-zA-ZÀ-ỹ\s]*$/)],
+    email: ['', [Validators.email]],
+    occupation: ['', [Validators.pattern(/^[a-zA-ZÀ-ỹ\s]*$/)]],
     address: [''],
     relationship: ['']
   });
@@ -131,21 +136,31 @@ export class ParentFormComponent implements OnInit {
   get f() { return this.parentForm.controls; }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.isEditMode.set(true);
-        this.currentId = +id;
-        this.loadParent(this.currentId);
+    this.checkEditMode();
+  }
+
+  private checkEditMode() {
+    let id = this.parentId;
+    if (!id) {
+      const routeId = this.route.snapshot.paramMap.get('id');
+      if (routeId) {
+        id = Number(routeId);
       }
-    });
+    }
+
+    if (id) {
+      this.isEditMode.set(true);
+      this.loadParent(id);
+    }
   }
 
   loadParent(id: number) {
     this.isLoading.set(true);
     this.parentService.getParentById(id).subscribe({
       next: (parent) => {
-        this.parentForm.patchValue(parent);
+        if (parent) {
+          this.parentForm.patchValue(parent);
+        }
         this.isLoading.set(false);
       },
       error: () => {
@@ -170,21 +185,40 @@ export class ParentFormComponent implements OnInit {
       address: rawData.address?.trim()
     };
 
-    if (this.isEditMode() && this.currentId) {
-      this.parentService.updateParent(this.currentId, data).subscribe({
-        next: () => this.router.navigate(['/parents']),
+    const id = this.parentId || Number(this.route.snapshot.paramMap.get('id'));
+
+    if (this.isEditMode() && id) {
+      this.parentService.updateParent(id, data).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          if (this.isModal) {
+            this.saved.emit();
+          } else {
+            this.router.navigate(['/parents']);
+          }
+        },
         error: (err) => { this.isLoading.set(false); alert(err.message || 'Lỗi cập nhật'); }
       });
     } else {
       this.parentService.createParent(data).subscribe({
-        next: () => this.router.navigate(['/parents']),
+        next: () => {
+          this.isLoading.set(false);
+          if (this.isModal) {
+            this.saved.emit();
+          } else {
+            this.router.navigate(['/parents']);
+          }
+        },
         error: (err) => { this.isLoading.set(false); alert(err.message || 'Lỗi thêm mới'); }
       });
     }
   }
 
   goBack() {
-    this.location.back();
+    if (this.isModal) {
+      this.cancelled.emit();
+    } else {
+      this.location.back();
+    }
   }
 }
-

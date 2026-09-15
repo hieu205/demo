@@ -24,10 +24,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/students/student-form.component').then(m => m.StudentFormComponent)
       },
       {
-        path: 'students/edit/:id',
-        loadComponent: () => import('./features/students/student-form.component').then(m => m.StudentFormComponent)
-      },
-      {
         path: 'students/detail/:id',
         loadComponent: () => import('./features/students/student-detail.component').then(m => m.StudentDetailComponent)
       },
@@ -37,10 +33,6 @@ export const routes: Routes = [
       },
       {
         path: 'parents/new',
-        loadComponent: () => import('./features/parents/parent-form.component').then(m => m.ParentFormComponent)
-      },
-      {
-        path: 'parents/edit/:id',
         loadComponent: () => import('./features/parents/parent-form.component').then(m => m.ParentFormComponent)
       },
       {
