@@ -2,7 +2,7 @@
 -- ============================================
 -- Student Management System — PostgreSQL Schema
 -- ============================================
- 
+
 -- Bảng Admin (tài khoản đăng nhập duy nhất)
 CREATE TABLE admin (
     id            SERIAL PRIMARY KEY,
@@ -12,7 +12,7 @@ CREATE TABLE admin (
     email         VARCHAR(100),
     created_at    TIMESTAMP NOT NULL DEFAULT NOW()
 );
- 
+
 -- Bảng Student
 CREATE TABLE student (
     id             SERIAL PRIMARY KEY,
@@ -23,7 +23,7 @@ CREATE TABLE student (
     address        VARCHAR(255),
     created_at     TIMESTAMP NOT NULL DEFAULT NOW()
 );
- 
+
 -- Bảng Parent
 CREATE TABLE parent (
     id            SERIAL PRIMARY KEY,
@@ -33,7 +33,7 @@ CREATE TABLE parent (
     occupation    VARCHAR(100),
     created_at    TIMESTAMP NOT NULL DEFAULT NOW()
 );
- 
+
 -- Bảng trung gian Student <-> Parent (n-n)
 CREATE TABLE student_parent (
     student_id        INT NOT NULL REFERENCES student(id) ON DELETE CASCADE,
@@ -41,9 +41,10 @@ CREATE TABLE student_parent (
     relationship_type VARCHAR(20) NOT NULL CHECK (relationship_type IN ('Father', 'Mother', 'Guardian')),
     PRIMARY KEY (student_id, parent_id)
 );
- 
+
 -- Index phụ trợ cho tìm kiếm/lọc thường dùng
 CREATE INDEX idx_student_full_name ON student (full_name);
 CREATE INDEX idx_student_class_name ON student (class_name);
 CREATE INDEX idx_parent_full_name ON parent (full_name);
 CREATE INDEX idx_student_parent_parent_id ON student_parent (parent_id);
+

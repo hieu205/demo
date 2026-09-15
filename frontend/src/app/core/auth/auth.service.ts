@@ -14,7 +14,7 @@ export class AuthService {
       const mockResponse = {
         accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock_token_for_admin01',
         expiresIn: 3600,
-        admin: { id: 1, username: 'admin01', fullName: 'Nguyen Van A' }
+        admin: { id: 1, username: 'admin01', fullName: 'Nguyen Van A', email: 'admin@edu.min' }
       };
       return of(mockResponse).pipe(delay(500));
     } else {

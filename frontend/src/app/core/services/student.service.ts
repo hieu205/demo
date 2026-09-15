@@ -13,12 +13,12 @@ export class StudentService {
 
   // --- MOCK DATA ---
   private students: Student[] = [
-    { id: 1, studentCode: 'SV001', fullName: 'Trần Thị B', dateOfBirth: '2008-05-12', gender: 'Female', className: '12A1', address: 'Hà Nội', parents: [] },
-    { id: 2, studentCode: 'SV002', fullName: 'Nguyễn Văn A', dateOfBirth: '2008-10-20', gender: 'Male', className: '12A1', address: 'TP.HCM', parents: [] },
-    { id: 3, studentCode: 'SV003', fullName: 'Lê Hoàng C', dateOfBirth: '2009-01-15', gender: 'Male', className: '11B2', address: 'Đà Nẵng', parents: [] },
-    { id: 4, studentCode: 'SV004', fullName: 'Phạm Minh D', dateOfBirth: '2009-08-30', gender: 'Female', className: '11B2', address: 'Hải Phòng', parents: [] },
-    { id: 5, studentCode: 'SV005', fullName: 'Vũ Đức E', dateOfBirth: '2010-03-05', gender: 'Male', className: '10C3', address: 'Cần Thơ', parents: [] },
-    { id: 6, studentCode: 'SV006', fullName: 'Hoàng Thị F', dateOfBirth: '2011-07-22', gender: 'Female', className: '9A4', address: 'Nha Trang', parents: [] },
+    { id: 1, studentCode: 'HS001', fullName: 'Trần Thị B', dateOfBirth: '2008-05-12', gender: 'Female', className: '12A1', address: 'Hà Nội', parents: [] },
+    { id: 2, studentCode: 'HS002', fullName: 'Nguyễn Văn A', dateOfBirth: '2008-10-20', gender: 'Male', className: '12A1', address: 'TP.HCM', parents: [] },
+    { id: 3, studentCode: 'HS003', fullName: 'Lê Hoàng C', dateOfBirth: '2009-01-15', gender: 'Male', className: '11B2', address: 'Đà Nẵng', parents: [] },
+    { id: 4, studentCode: 'HS004', fullName: 'Phạm Minh D', dateOfBirth: '2009-08-30', gender: 'Female', className: '11B2', address: 'Hải Phòng', parents: [] },
+    { id: 5, studentCode: 'HS005', fullName: 'Vũ Đức E', dateOfBirth: '2010-03-05', gender: 'Male', className: '10C3', address: 'Cần Thơ', parents: [] },
+    { id: 6, studentCode: 'HS006', fullName: 'Hoàng Thị F', dateOfBirth: '2011-07-22', gender: 'Female', className: '9A4', address: 'Nha Trang', parents: [] },
   ];
 
   // --- API Học sinh ---
@@ -76,7 +76,7 @@ export class StudentService {
       id: Math.max(...this.students.map(s => s.id), 0) + 1,
       parents: []
     };
-    this.students.unshift(newStudent); // Thêm lên đầu danh sách
+    this.students.push(newStudent); // Thêm xuống cuối danh sách
     return of(newStudent).pipe(delay(500));
   }
 

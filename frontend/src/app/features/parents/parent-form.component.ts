@@ -9,12 +9,12 @@ import { ParentService } from '../../core/services/parent.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden max-w-3xl mx-auto">
-      <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-        <h2 class="text-xl font-bold text-gray-800">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden max-w-3xl mx-auto">
+      <div class="p-6 border-b border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 flex justify-between items-center">
+        <h2 class="text-xl font-bold text-gray-800 dark:text-slate-100">
           {{ isEditMode() ? 'Cập nhật Phụ huynh' : 'Thêm mới Phụ huynh' }}
         </h2>
-        <button (click)="goBack()" class="text-gray-500 hover:text-gray-700">
+        <button (click)="goBack()" class="text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:text-slate-300">
           Trở lại
         </button>
       </div>
@@ -25,41 +25,51 @@ import { ParentService } from '../../core/services/parent.service';
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <!-- Họ Tên -->
             <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Họ và Tên <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Họ và Tên <span class="text-red-500">*</span></label>
               <input type="text" formControlName="fullName"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 dark:bg-slate-800 dark:text-white"
                 [ngClass]="{'border-red-500': submitted() && f['fullName'].errors}">
-              <p *ngIf="submitted() && f['fullName'].errors?.['required']" class="text-red-500 text-xs mt-1">Họ tên là bắt buộc</p>
+              <div *ngIf="submitted() && f['fullName'].errors" class="text-red-500 text-xs mt-1">
+                <p *ngIf="f['fullName'].errors?.['required']">Họ tên là bắt buộc</p>
+                <p *ngIf="f['fullName'].errors?.['pattern']">Họ tên không được chứa số và ký tự đặc biệt</p>
+              </div>
             </div>
 
             <!-- SĐT -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Số điện thoại <span class="text-red-500">*</span></label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Số điện thoại <span class="text-red-500">*</span></label>
               <input type="text" formControlName="phoneNumber"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 dark:bg-slate-800 dark:text-white"
                 [ngClass]="{'border-red-500': submitted() && f['phoneNumber'].errors}">
-              <p *ngIf="submitted() && f['phoneNumber'].errors?.['required']" class="text-red-500 text-xs mt-1">Số điện thoại là bắt buộc</p>
+              <div *ngIf="submitted() && f['phoneNumber'].errors" class="text-red-500 text-xs mt-1">
+                <p *ngIf="f['phoneNumber'].errors?.['required']">Số điện thoại là bắt buộc</p>
+                <p *ngIf="f['phoneNumber'].errors?.['pattern']">Số điện thoại không hợp lệ (Gồm 10 số, bắt đầu bằng 03,05,07,08,09)</p>
+              </div>
             </div>
 
             <!-- Email -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Email</label>
               <input type="email" formControlName="email"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 dark:bg-slate-800 dark:text-white"
+                [ngClass]="{'border-red-500': submitted() && f['email'].errors}">
+              <p *ngIf="submitted() && f['email'].errors?.['email']" class="text-red-500 text-xs mt-1">Email không hợp lệ</p>
             </div>
 
             <!-- Nghề nghiệp -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Nghề nghiệp</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Nghề nghiệp</label>
               <input type="text" formControlName="occupation"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 dark:bg-slate-800 dark:text-white"
+                [ngClass]="{'border-red-500': submitted() && f['occupation'].errors}">
+              <p *ngIf="submitted() && f['occupation'].errors?.['pattern']" class="text-red-500 text-xs mt-1">Nghề nghiệp không được chứa số và ký tự đặc biệt</p>
             </div>
 
             <!-- Vai trò / Quan hệ -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Vai trò / Quan hệ</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Vai trò / Quan hệ</label>
               <select formControlName="relationship"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 dark:bg-slate-800 dark:text-white bg-white dark:bg-slate-800">
                 <option value="">Chọn mối quan hệ...</option>
                 <option value="Bố">Bố</option>
                 <option value="Mẹ">Mẹ</option>
@@ -72,15 +82,15 @@ import { ParentService } from '../../core/services/parent.service';
 
             <!-- Địa chỉ -->
             <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Địa chỉ</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Địa chỉ</label>
               <textarea formControlName="address" rows="2"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 dark:bg-slate-800 dark:text-white"></textarea>
             </div>
           </div>
 
-          <div class="flex justify-end gap-3 border-t border-gray-100 pt-6">
+          <div class="flex justify-end gap-3 border-t border-gray-100 dark:border-slate-700 pt-6">
             <button type="button" (click)="goBack()"
-              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+              class="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 rounded-md hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
               Hủy
             </button>
             <button type="submit" [disabled]="isLoading()"
@@ -107,10 +117,13 @@ export class ParentFormComponent implements OnInit {
   currentId: number | null = null;
 
   parentForm: FormGroup = this.fb.group({
-    fullName: ['', Validators.required],
-    phoneNumber: ['', Validators.required],
-    email: [''],
-    occupation: [''],
+    fullName: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ỹ\s]*[a-zA-ZÀ-ỹ][a-zA-ZÀ-ỹ\s]*$/)]],
+    phoneNumber: ['', [
+      Validators.required,
+      Validators.pattern(/^(0[3|5|7|8|9])+([0-9]{8})$/)
+    ]],
+    email: ['', Validators.email],
+    occupation: ['', Validators.pattern(/^[a-zA-ZÀ-ỹ\s]*$/)],
     address: [''],
     relationship: ['']
   });
@@ -147,7 +160,15 @@ export class ParentFormComponent implements OnInit {
     if (this.parentForm.invalid) return;
 
     this.isLoading.set(true);
-    const data = this.parentForm.value;
+    const rawData = this.parentForm.value;
+    const data = {
+      ...rawData,
+      fullName: rawData.fullName?.trim(),
+      phoneNumber: rawData.phoneNumber?.trim(),
+      email: rawData.email?.trim(),
+      occupation: rawData.occupation?.trim(),
+      address: rawData.address?.trim()
+    };
 
     if (this.isEditMode() && this.currentId) {
       this.parentService.updateParent(this.currentId, data).subscribe({

@@ -15,7 +15,7 @@ import { ParentService } from '../../core/services/parent.service';
     <div *ngIf="!isLoading() && student()" class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
 
       <!-- Cột Trái: Thông tin Học sinh -->
-      <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="lg:col-span-1 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         <div class="bg-blue-600 h-24 relative">
           <button (click)="goBack()" class="absolute top-4 left-4 text-white hover:text-gray-200 bg-black/20 p-2 rounded-full">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -23,28 +23,28 @@ import { ParentService } from '../../core/services/parent.service';
         </div>
         <div class="px-6 pb-6 pt-16 relative">
           <div class="w-24 h-24 bg-gray-200 rounded-full border-4 border-white absolute -top-12 left-6 flex items-center justify-center shadow-md">
-            <span class="text-3xl font-bold text-gray-500">{{ student()?.fullName?.charAt(0) }}</span>
+            <span class="text-3xl font-bold text-gray-500 dark:text-slate-400">{{ student()?.fullName?.charAt(0) }}</span>
           </div>
           <div>
-            <h2 class="text-xl font-bold text-gray-900">{{ student()?.fullName }}</h2>
-            <p class="text-blue-600 font-medium">{{ student()?.studentCode }}</p>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ student()?.fullName }}</h2>
+            <p class="text-blue-600 dark:text-blue-400 font-medium">{{ student()?.studentCode }}</p>
           </div>
 
           <div class="mt-6 space-y-4">
             <div>
-              <p class="text-sm text-gray-500">Lớp</p>
+              <p class="text-sm text-gray-500 dark:text-slate-400">Lớp</p>
               <p class="font-medium">{{ student()?.className }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">Ngày sinh</p>
+              <p class="text-sm text-gray-500 dark:text-slate-400">Ngày sinh</p>
               <p class="font-medium">{{ student()?.dateOfBirth | date:'dd/MM/yyyy' }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">Giới tính</p>
+              <p class="text-sm text-gray-500 dark:text-slate-400">Giới tính</p>
               <p class="font-medium">{{ student()?.gender === 'Male' ? 'Nam' : 'Nữ' }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-500">Địa chỉ</p>
+              <p class="text-sm text-gray-500 dark:text-slate-400">Địa chỉ</p>
               <p class="font-medium">{{ student()?.address || 'Chưa cập nhật' }}</p>
             </div>
           </div>
@@ -52,29 +52,29 @@ import { ParentService } from '../../core/services/parent.service';
       </div>
 
       <!-- Cột Phải: Danh sách Phụ huynh (Quan hệ n-n) -->
-      <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
-          <h3 class="text-lg font-bold text-gray-800">Thông tin Phụ huynh </h3>
+      <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+        <div class="flex justify-between items-center mb-6 border-b border-gray-100 dark:border-slate-700 pb-4">
+          <h3 class="text-lg font-bold text-gray-800 dark:text-slate-100">Thông tin Phụ huynh </h3>
         </div>
 
         <!-- Bảng danh sách phụ huynh hiện tại -->
         <div *ngIf="student()?.parents?.length" class="overflow-x-auto mb-8">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+            <thead class="bg-gray-50 dark:bg-slate-900">
               <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Họ Tên</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vai trò</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Điện thoại</th>
-                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Thao tác</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Họ Tên</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Vai trò</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Điện thoại</th>
+                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Thao tác</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
+            <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
               <tr *ngFor="let parent of student()?.parents">
-                <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ parent.fullName }}</td>
-                <td class="px-4 py-3 text-sm text-blue-600 font-semibold">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{{ parent.fullName }}</td>
+                <td class="px-4 py-3 text-sm text-blue-600 dark:text-blue-400 font-semibold">
                   {{ parent.relationshipType || '—' }}
                 </td>
-                <td class="px-4 py-3 text-sm text-gray-500">{{ parent.phoneNumber }}</td>
+                <td class="px-4 py-3 text-sm text-gray-500 dark:text-slate-400">{{ parent.phoneNumber }}</td>
                 <td class="px-4 py-3 text-right">
                   <button (click)="removeParent(parent.id)" class="text-red-500 hover:text-red-700 text-sm font-medium">Gỡ liên kết</button>
                 </td>
@@ -83,13 +83,13 @@ import { ParentService } from '../../core/services/parent.service';
           </table>
         </div>
 
-        <div *ngIf="!student()?.parents?.length" class="text-center py-8 bg-gray-50 rounded-lg mb-8 border border-dashed border-gray-300">
-          <p class="text-gray-500">Học sinh này chưa được gán phụ huynh nào.</p>
+        <div *ngIf="!student()?.parents?.length" class="text-center py-8 bg-gray-50 dark:bg-slate-900 rounded-lg mb-8 border border-dashed border-gray-300 dark:border-slate-600">
+          <p class="text-gray-500 dark:text-slate-400">Học sinh này chưa được gán phụ huynh nào.</p>
         </div>
 
         <!-- Form Gán thêm Phụ huynh với tính năng Tìm kiếm -->
-        <div class="bg-blue-50 p-5 rounded-lg border border-blue-100 relative">
-          <h4 class="font-semibold text-blue-800 mb-3">Gán thêm Phụ huynh từ Hệ thống</h4>
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-lg border border-blue-100 relative">
+          <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-3">Gán thêm Phụ huynh từ Hệ thống</h4>
 
           <!-- Màn chắn (Backdrop) để tắt dropdown khi bấm ra ngoài -->
           <div *ngIf="showDropdown && !selectedParent()" (click)="showDropdown = false" class="fixed inset-0 z-0"></div>
@@ -98,33 +98,33 @@ import { ParentService } from '../../core/services/parent.service';
             <!-- Searchable Dropdown -->
             <div class="relative flex-1">
               <input type="text" [(ngModel)]="searchTerm" (input)="filterParents(); showDropdown = true" (focus)="showDropdown = true"
-                     placeholder="🔍 Gõ tên hoặc SĐT phụ huynh để tìm..."
-                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white transition-all">
+                     [placeholder]="selectedParent() ? '' : '🔍 Gõ tên hoặc SĐT phụ huynh để tìm...'"
+                     class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 transition-all">
 
               <!-- Selected Badge Overlay (Hiển thị đè lên input khi đã chọn) -->
-              <div *ngIf="selectedParent()" class="absolute inset-y-1 left-1 right-10 flex items-center bg-blue-100 rounded px-3 text-blue-800">
+              <div *ngIf="selectedParent()" class="absolute inset-y-1 left-1 right-10 flex items-center bg-blue-100 dark:bg-blue-900 rounded px-3 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/30">
                 <span class="font-medium truncate">{{ selectedParent()?.fullName }}</span>
-                <span class="ml-2 text-sm text-blue-600 truncate">- {{ selectedParent()?.phoneNumber }}</span>
-                <span class="ml-2 text-xs bg-white text-blue-600 px-2 py-0.5 rounded-full" *ngIf="selectedParent()?.relationship">{{ selectedParent()?.relationship }}</span>
+                <span class="ml-2 text-sm text-blue-600 dark:text-blue-400 truncate">- {{ selectedParent()?.phoneNumber }}</span>
+                <span class="ml-2 text-xs bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full" *ngIf="selectedParent()?.relationship">{{ selectedParent()?.relationship }}</span>
               </div>
-              <button *ngIf="selectedParent()" (click)="clearSelection(); $event.stopPropagation()" class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-red-500 bg-white rounded-r-md">
+              <button *ngIf="selectedParent()" (click)="clearSelection(); $event.stopPropagation()" class="absolute inset-y-1 right-1 px-3 text-gray-400 hover:text-red-500 bg-white dark:bg-slate-800 rounded-md">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
 
               <!-- Dropdown List -->
-              <div *ngIf="showDropdown && !selectedParent()" class="absolute w-full mt-1 bg-white border border-gray-200 rounded-md shadow-xl max-h-56 overflow-y-auto">
+              <div *ngIf="showDropdown && !selectedParent()" class="absolute w-full mt-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-md shadow-xl max-h-56 overflow-y-auto">
                 <ul class="py-1">
-                  <li *ngIf="filteredParents().length === 0" class="px-4 py-4 text-sm text-gray-500 text-center flex flex-col items-center">
+                  <li *ngIf="filteredParents().length === 0" class="px-4 py-4 text-sm text-gray-500 dark:text-slate-400 text-center flex flex-col items-center">
                     <svg class="w-8 h-8 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Không tìm thấy phụ huynh nào
                   </li>
                   <li *ngFor="let p of filteredParents()" (mousedown)="selectParent(p); $event.preventDefault()"
-                      class="px-4 py-3 hover:bg-blue-50 cursor-pointer flex flex-col border-b border-gray-50 last:border-0 transition-colors">
+                      class="px-4 py-3 hover:bg-blue-50 dark:bg-blue-900/20 dark:hover:bg-slate-700 cursor-pointer flex flex-col border-b border-gray-50 last:border-0 transition-colors">
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-900">{{ p.fullName }}</span>
+                      <span class="font-medium text-gray-900 dark:text-white">{{ p.fullName }}</span>
                       <span *ngIf="p.relationship" class="text-xs bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded">{{ p.relationship }}</span>
                     </div>
-                    <span class="text-xs text-gray-500 mt-1">SĐT: {{ p.phoneNumber }} | Nghề: {{ p.occupation || '—' }}</span>
+                    <span class="text-xs text-gray-500 dark:text-slate-400 mt-1">SĐT: {{ p.phoneNumber }} | Nghề: {{ p.occupation || '—' }}</span>
                   </li>
                 </ul>
               </div>

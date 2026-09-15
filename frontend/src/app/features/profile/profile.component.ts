@@ -8,14 +8,14 @@ import { AuthService } from '../../core/auth/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 max-w-3xl mx-auto mt-6 animate-fade-in-up">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 max-w-3xl mx-auto mt-6 animate-fade-in-up">
 
       <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
         <!-- Header & Avatar -->
-        <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 border-b border-gray-100 pb-8 relative">
+        <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 border-b border-gray-100 dark:border-slate-700 pb-8 relative">
           <!-- Avatar Upload -->
           <div class="relative group cursor-pointer" (click)="fileInput.click()">
-            <div *ngIf="!avatarUrl()" class="w-28 h-28 bg-gradient-to-tr from-blue-100 to-blue-200 rounded-full flex items-center justify-center text-blue-700 text-4xl font-bold shadow-inner">
+            <div *ngIf="!avatarUrl()" class="w-28 h-28 bg-gradient-to-tr from-blue-100 to-blue-200 rounded-full flex items-center justify-center text-blue-700 dark:text-blue-400 text-4xl font-bold shadow-inner">
               {{ profileForm.value.fullName?.charAt(0) || 'A' }}
             </div>
             <img *ngIf="avatarUrl()" [src]="avatarUrl()" class="w-28 h-28 rounded-full object-cover shadow-sm border-4 border-white" alt="Avatar">
@@ -29,8 +29,8 @@ import { AuthService } from '../../core/auth/auth.service';
           </div>
 
           <div class="text-center sm:text-left">
-            <h1 class="text-2xl font-bold text-gray-800">Cài đặt Hồ sơ</h1>
-            <p class="text-gray-500 mt-1">Cập nhật thông tin và bảo mật tài khoản của bạn</p>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-slate-100">Cài đặt Hồ sơ</h1>
+            <p class="text-gray-500 dark:text-slate-400 mt-1">Cập nhật thông tin và bảo mật tài khoản của bạn</p>
           </div>
 
           <button *ngIf="isEditing()" type="submit" [disabled]="profileForm.invalid || isLoading()"
@@ -43,14 +43,14 @@ import { AuthService } from '../../core/auth/auth.service';
 
         <!-- Thông tin cơ bản -->
         <div class="mb-10">
-          <h2 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-blue-500 pl-3">Thông tin cơ bản</h2>
+          <h2 class="text-lg font-bold text-gray-800 dark:text-slate-100 mb-4 border-l-4 border-blue-500 pl-3">Thông tin cơ bản</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <!-- Họ và tên -->
             <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">Họ và Tên <span class="text-red-500">*</span></label>
+              <label class="block text-gray-700 dark:text-slate-300 text-sm font-bold mb-2">Họ và Tên <span class="text-red-500">*</span></label>
               <input formControlName="fullName" type="text"
-                class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-2.5 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                class="shadow-sm appearance-none border border-gray-300 dark:border-slate-600 rounded-lg w-full py-2.5 px-3 text-gray-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 [ngClass]="{'border-red-500': f['fullName'].invalid && f['fullName'].touched}">
               <div *ngIf="f['fullName'].invalid && f['fullName'].touched" class="text-red-500 text-xs mt-1 font-medium">
                 Vui lòng nhập họ và tên.
@@ -59,16 +59,27 @@ import { AuthService } from '../../core/auth/auth.service';
 
             <!-- Tên đăng nhập -->
             <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">Tên đăng nhập</label>
+              <label class="block text-gray-700 dark:text-slate-300 text-sm font-bold mb-2">Tên đăng nhập</label>
               <input type="text" [value]="user?.username" disabled
-                class="shadow-sm appearance-none border border-gray-200 bg-gray-100 rounded-lg w-full py-2.5 px-3 text-gray-500 cursor-not-allowed">
+                class="shadow-sm appearance-none border border-gray-200 dark:border-slate-700 bg-gray-100 dark:bg-slate-700 rounded-lg w-full py-2.5 px-3 text-gray-500 dark:text-slate-400 cursor-not-allowed">
               <p class="text-xs text-gray-400 mt-1">Không thể thay đổi tên đăng nhập.</p>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-gray-700 dark:text-slate-300 text-sm font-bold mb-2">Email <span class="text-red-500">*</span></label>
+              <input formControlName="email" type="email"
+                class="shadow-sm appearance-none border border-gray-300 dark:border-slate-600 rounded-lg w-full py-2.5 px-3 text-gray-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                [ngClass]="{'border-red-500': f['email'].invalid && f['email'].touched}">
+              <div *ngIf="f['email'].invalid && f['email'].touched" class="text-red-500 text-xs mt-1 font-medium">
+                Vui lòng nhập email hợp lệ.
+              </div>
             </div>
 
             <!-- Role -->
             <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">Quyền hạn (Role)</label>
-              <div class="flex items-center gap-2 py-2.5 px-3 bg-blue-50 text-blue-700 rounded-lg border border-blue-100 font-medium">
+              <label class="block text-gray-700 dark:text-slate-300 text-sm font-bold mb-2">Quyền hạn (Role)</label>
+              <div class="flex items-center gap-2 py-2.5 px-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg border border-blue-100 font-medium">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 Administrator
               </div>
@@ -78,18 +89,18 @@ import { AuthService } from '../../core/auth/auth.service';
 
         <!-- Đổi mật khẩu -->
         <div>
-          <h2 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-red-400 pl-3">Bảo mật (Đổi mật khẩu)</h2>
-          <p class="text-sm text-gray-500 mb-5">Để trống các trường này nếu bạn không muốn đổi mật khẩu.</p>
+          <h2 class="text-lg font-bold text-gray-800 dark:text-slate-100 mb-4 border-l-4 border-red-400 pl-3">Bảo mật (Đổi mật khẩu)</h2>
+          <p class="text-sm text-gray-500 dark:text-slate-400 mb-5">Để trống các trường này nếu bạn không muốn đổi mật khẩu.</p>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-xl border border-gray-100">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Mật khẩu hiện tại -->
-            <div class="md:col-span-2 max-w-md">
-              <label class="block text-gray-700 text-sm font-bold mb-2">Mật khẩu hiện tại</label>
+            <div>
+              <label class="block text-gray-700 dark:text-slate-300 text-sm font-bold mb-2">Mật khẩu hiện tại</label>
               <div class="relative">
                 <input formControlName="currentPassword" [type]="showCurrentPwd ? 'text' : 'password'"
-                  class="shadow-sm appearance-none border rounded-lg w-full py-2.5 pl-3 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  [ngClass]="{'border-red-500': f['currentPassword'].errors, 'border-gray-300': !f['currentPassword'].errors}">
-                <button type="button" (click)="showCurrentPwd = !showCurrentPwd" tabindex="-1" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
+                  class="shadow-sm appearance-none border rounded-lg w-full py-2.5 pl-3 pr-10 text-gray-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  [ngClass]="{'border-red-500': f['currentPassword'].errors, 'border-gray-300 dark:border-slate-600': !f['currentPassword'].errors}">
+                <button type="button" (click)="showCurrentPwd = !showCurrentPwd" tabindex="-1" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-slate-400 hover:text-blue-600 dark:text-blue-400 focus:outline-none">
                   <svg *ngIf="!showCurrentPwd" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   <svg *ngIf="showCurrentPwd" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
@@ -102,13 +113,15 @@ import { AuthService } from '../../core/auth/auth.service';
               </div>
             </div>
 
+            <div class="hidden md:block"></div>
+
             <!-- Mật khẩu mới -->
             <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">Mật khẩu mới</label>
+              <label class="block text-gray-700 dark:text-slate-300 text-sm font-bold mb-2">Mật khẩu mới</label>
               <div class="relative">
                 <input formControlName="newPassword" [type]="showNewPwd ? 'text' : 'password'"
-                  class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-2.5 pl-3 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                <button type="button" (click)="showNewPwd = !showNewPwd" tabindex="-1" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
+                  class="shadow-sm appearance-none border border-gray-300 dark:border-slate-600 rounded-lg w-full py-2.5 pl-3 pr-10 text-gray-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                <button type="button" (click)="showNewPwd = !showNewPwd" tabindex="-1" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-slate-400 hover:text-blue-600 dark:text-blue-400 focus:outline-none">
                   <svg *ngIf="!showNewPwd" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   <svg *ngIf="showNewPwd" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
@@ -118,14 +131,16 @@ import { AuthService } from '../../core/auth/auth.service';
               </div>
             </div>
 
+            <div class="hidden md:block"></div>
+
             <!-- Xác nhận mật khẩu mới -->
             <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">Xác nhận mật khẩu</label>
+              <label class="block text-gray-700 dark:text-slate-300 text-sm font-bold mb-2">Xác nhận mật khẩu</label>
               <div class="relative">
                 <input formControlName="confirmPassword" [type]="showConfirmPwd ? 'text' : 'password'"
-                  class="shadow-sm appearance-none border rounded-lg w-full py-2.5 pl-3 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  [ngClass]="{'border-red-500': profileForm.errors?.['passwordMismatch'] && f['confirmPassword'].touched, 'border-gray-300': !profileForm.errors?.['passwordMismatch'] || !f['confirmPassword'].touched}">
-                <button type="button" (click)="showConfirmPwd = !showConfirmPwd" tabindex="-1" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
+                  class="shadow-sm appearance-none border rounded-lg w-full py-2.5 pl-3 pr-10 text-gray-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  [ngClass]="{'border-red-500': profileForm.errors?.['passwordMismatch'] && f['confirmPassword'].touched, 'border-gray-300 dark:border-slate-600': !profileForm.errors?.['passwordMismatch'] || !f['confirmPassword'].touched}">
+                <button type="button" (click)="showConfirmPwd = !showConfirmPwd" tabindex="-1" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-slate-400 hover:text-blue-600 dark:text-blue-400 focus:outline-none">
                   <svg *ngIf="!showConfirmPwd" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   <svg *ngIf="showConfirmPwd" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
@@ -171,6 +186,7 @@ export class ProfileComponent implements OnInit {
 
   profileForm: FormGroup = this.fb.group({
     fullName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
     currentPassword: [''],
     newPassword: ['', [Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
     confirmPassword: ['']
@@ -181,7 +197,8 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     if (this.user) {
       this.profileForm.patchValue({
-        fullName: this.user.fullName
+        fullName: this.user.fullName,
+        email: this.user.email || ''
       });
       // Check stored avatar
       const savedAvatar = localStorage.getItem('user_avatar');

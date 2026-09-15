@@ -81,7 +81,7 @@ export class ParentService {
       ...data,
       id: Math.max(...this.parents.map(p => p.id), 0) + 1
     };
-    this.parents.unshift(newParent);
+    this.parents.push(newParent);
     return of(newParent).pipe(delay(400));
   }
 
