@@ -9,9 +9,9 @@ import { ThemeService } from '../../core/services/theme.service';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    <div class="min-h-screen bg-gray-50 dark:bg-slate-900 flex flex-col transition-colors duration-300">
+    <div class="h-screen bg-gray-50 dark:bg-slate-900 flex flex-col transition-colors duration-300 overflow-hidden">
       <!-- Top Navigation -->
-      <header class="bg-blue-600 dark:bg-slate-800 text-white shadow-md transition-colors duration-300">
+      <header class="bg-blue-600 dark:bg-slate-800 text-white shadow-md transition-colors duration-300 z-20 relative">
         <div class="w-full flex justify-between h-16 items-center">
 
           <!-- Logo & Hamburger (Width matches sidebar) -->
@@ -89,7 +89,7 @@ import { ThemeService } from '../../core/services/theme.service';
         </div>
       </header>
 
-      <div class="flex-1 flex w-full">
+      <div class="flex-1 flex w-full overflow-hidden relative">
         <!-- Mobile Sidebar Backdrop -->
         <div *ngIf="!isSidebarCollapsed"
              (click)="toggleSidebar()"
@@ -118,7 +118,7 @@ import { ThemeService } from '../../core/services/theme.service';
             </button>
           </div>
 
-          <nav class="mt-2 md:mt-5 px-2 flex-1 space-y-1">
+          <nav class="mt-2 md:mt-5 px-2 flex-1 space-y-1 overflow-y-auto">
             <!-- Dashboard Menu -->
             <a routerLink="/" routerLinkActive="bg-blue-50 dark:bg-slate-700 text-blue-700 dark:text-blue-400" [routerLinkActiveOptions]="{exact: true}"
                (click)="closeSidebarOnMobile()"
@@ -161,7 +161,7 @@ import { ThemeService } from '../../core/services/theme.service';
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 p-4 sm:p-6 w-full overflow-hidden text-gray-900 dark:text-slate-100 transition-colors duration-300">
+        <main class="flex-1 p-4 sm:p-6 w-full overflow-y-auto overflow-x-hidden text-gray-900 dark:text-slate-100 transition-colors duration-300">
           <router-outlet></router-outlet>
         </main>
       </div>
